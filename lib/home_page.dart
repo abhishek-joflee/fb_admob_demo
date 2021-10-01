@@ -30,9 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _loadRewardAd() {
-    print("_loadRewardAd called...");
     FacebookRewardedVideoAd.loadRewardedVideoAd(
-      placementId: "PLAYABLE#YOUR_PLACEMENT_ID",
+      placementId: "VID_HD_9_16_39S_APP_INSTALL#YOUR_PLACEMENT_ID",
       listener: (result, value) {
         switch (result) {
           case RewardedVideoAdResult.LOADED:
