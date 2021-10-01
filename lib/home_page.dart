@@ -14,6 +14,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    FacebookAudienceNetwork.init(
+      testingId: "aed8db86-093d-4448-a51f-ddba0e315164",
+      iOSAdvertiserTrackingEnabled: true,
+    );
   }
 
   int _counter = 0;
