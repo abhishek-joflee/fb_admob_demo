@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
           case InterstitialAdResult.ERROR:
             _adLoaded = false;
             debugPrint("myLog: Ad load Error");
+            _loadInterStitialAd();
             break;
           case InterstitialAdResult.LOGGING_IMPRESSION:
             debugPrint("myLog: Ad Impressed");
