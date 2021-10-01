@@ -26,37 +26,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadInterStitialAd();
+    _loadRewardAd();
   }
 
-  _loadInterStitialAd() {
-    FacebookInterstitialAd.loadInterstitialAd(
-      placementId: "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
+  _loadRewardAd() {
+    print("_loadRewardAd called...");
+    FacebookRewardedVideoAd.loadRewardedVideoAd(
+      placementId: "PLAYABLE#YOUR_PLACEMENT_ID",
       listener: (result, value) {
         switch (result) {
-          case InterstitialAdResult.LOADED:
+          case RewardedVideoAdResult.LOADED:
             _adLoaded = true;
             debugPrint("myLog: Ad loaded");
             break;
-          case InterstitialAdResult.ERROR:
+          case RewardedVideoAdResult.ERROR:
             _adLoaded = false;
             debugPrint("myLog: Ad load Error");
             break;
-          case InterstitialAdResult.LOGGING_IMPRESSION:
+          case RewardedVideoAdResult.LOGGING_IMPRESSION:
             debugPrint("myLog: Ad Impressed");
             break;
-          case InterstitialAdResult.DISPLAYED:
-            debugPrint("myLog: Ad Displayed");
+          case RewardedVideoAdResult.VIDEO_COMPLETE:
+            debugPrint("myLog: Ad video complete");
             break;
-          case InterstitialAdResult.CLICKED:
+          case RewardedVideoAdResult.VIDEO_CLOSED:
+            debugPrint("myLog: Ad video closed");
+            _loadRewardAd();
+            break;
+          case RewardedVideoAdResult.CLICKED:
             debugPrint("myLog: Ad clicked");
             break;
-          case InterstitialAdResult.DISMISSED:
-            debugPrint("myLog: Ad Dismissed");
-            _loadInterStitialAd();
-            break;
           default:
-            debugPrint("unknown InterstitialAdResult");
+            debugPrint("myLog: unknown InterstitialAdResult");
         }
       },
     );
@@ -68,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     if (_counter % 4 == 0 && _adLoaded) {
-      FacebookInterstitialAd.showInterstitialAd();
+      FacebookRewardedVideoAd.showRewardedVideoAd();
     }
   }
 
