@@ -11,12 +11,65 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _adLoaded = false;
   int _counter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    FacebookAudienceNetwork.init(
+      testingId: "aed8db86-093d-4448-a51f-ddba0e315164",
+      iOSAdvertiserTrackingEnabled: true,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadInterStitialAd();
+  }
+
+  _loadInterStitialAd() {
+    FacebookInterstitialAd.loadInterstitialAd(
+      placementId: "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
+      listener: (result, value) {
+        switch (result) {
+          case InterstitialAdResult.LOADED:
+            _adLoaded = true;
+            debugPrint("myLog: Ad loaded");
+            break;
+          case InterstitialAdResult.ERROR:
+            _adLoaded = false;
+            debugPrint("myLog: Ad load Error");
+            break;
+          case InterstitialAdResult.LOGGING_IMPRESSION:
+            debugPrint("myLog: Ad Impressed");
+            break;
+          case InterstitialAdResult.DISPLAYED:
+            debugPrint("myLog: Ad Displayed");
+            break;
+          case InterstitialAdResult.CLICKED:
+            debugPrint("myLog: Ad clicked");
+            break;
+          case InterstitialAdResult.DISMISSED:
+            debugPrint("myLog: Ad Dismissed");
+            _loadInterStitialAd();
+            break;
+          default:
+            debugPrint("unknown InterstitialAdResult");
+        }
+      },
+    );
+  }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
+
+    if (_counter % 4 == 0 && _adLoaded) {
+      FacebookInterstitialAd.showInterstitialAd();
+    }
   }
 
   @override
@@ -25,40 +78,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            alignment: const Alignment(0.5, 1),
-            child: FacebookBannerAd(
-              placementId: "IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID",
-              bannerSize: BannerSize.STANDARD,
-              listener: (result, value) {
-                switch (result) {
-                  case BannerAdResult.ERROR:
-                    debugPrint("Error: $value");
-                    break;
-                  case BannerAdResult.LOADED:
-                    debugPrint("Loaded: $value");
-                    break;
-                  case BannerAdResult.CLICKED:
-                    debugPrint("Clicked: $value");
-                    break;
-                  case BannerAdResult.LOGGING_IMPRESSION:
-                    debugPrint("Logging Impression: $value");
-                    break;
-                }
-              },
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'At multiple of 4, you\'ll see the interstitial ad...',
             ),
-          ),
-          const Text(
-            'You have pushed the button this many times:',
-          ),
-          Text(
-            '$_counter',
-            style: Theme.of(context).textTheme.headline4,
-          ),
-        ],
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
